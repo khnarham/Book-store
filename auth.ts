@@ -1,3 +1,4 @@
+"use server";
 import NextAuth , {AuthOptions , SessionStrategy} from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { UserModel } from "@/database/schemas/UserSchema";
@@ -5,6 +6,7 @@ import dbConnect from "@/database/dbConnect";
 import { compare } from "bcryptjs";
 
 export const authOptions: AuthOptions = {
+  secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",
   },
