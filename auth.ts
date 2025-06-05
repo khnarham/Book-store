@@ -1,5 +1,4 @@
-"use server";
-import NextAuth , {AuthOptions , SessionStrategy} from "next-auth";
+import NextAuth, { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { UserModel } from "@/database/schemas/UserSchema";
 import dbConnect from "@/database/dbConnect";
@@ -7,13 +6,11 @@ import { compare } from "bcryptjs";
 
 export const authOptions: AuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
-  session: {
-    strategy: "jwt",
-  },
+  session: { strategy: "jwt" },
   providers: [
     CredentialsProvider({
       credentials: {
-        email: { label: "Email", type: "email", placeholder: "you@example.com" },
+        email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
@@ -38,24 +35,19 @@ export const authOptions: AuthOptions = {
     signIn: "/sign-in",
   },
   callbacks: {
-    async jwt({ token, user }:{token: any , user: any}) {
+    async jwt({ token, user}:{ token: any , user: any}) {
       if (user) {
         token.id = user.id;
         token.name = user.name;
       }
       return token;
     },
-    async session({ session, token }: {session: any , token: any}) {
+    async session({ session, token } : {session: any , token: any}) {
       if (session.user) {
-        session.user.id = token.id as string;
-        session.user.name = token.name as string;
+        session.user.id = token.id;
+        session.user.name = token.name;
       }
       return session;
     },
   },
 };
-
-const handlers = NextAuth(authOptions);
-
-export const GET = handlers;
-export const POST = handlers;
